@@ -1,0 +1,156 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace HomeworkArray
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            display.Clear();
+            string input = textBox1.Text;
+            int counter = 0; 
+            if (string.IsNullOrEmpty(input)) display.AppendText("Please enter text");
+            else display.AppendText("");
+
+            char[] CharArray = input.ToCharArray();
+
+            for (int i = 0; i < CharArray.Length; i++)
+            {
+                if (CharArray[i] == '.' || CharArray[i] == ',' || CharArray[i] == '$' || char.IsDigit(CharArray[i]))
+                {
+                    display.AppendText("valid number  ");
+                }
+                else
+                {
+                    display.AppendText("Character " + CharArray[i] + " at position " + i + " is not valid");
+                }
+            }
+
+            if (radioButtonINT.Checked)
+            {
+                if (input.Contains('.') || input.Contains(','))
+                {
+                    display.AppendText("\nEntered number is not an integer");
+
+                    // int[] IntArray = new int[k];  
+                    //   for (int i = 0; i < IntArray.Length; i++) 
+                    /*   {
+                         int parseNumber = Convert.ToInt32(CharArray[i]);
+                         display.AppendText(Convert.ToString(parseNumber));
+                         } */
+
+                }
+                else
+                {
+                    int i = int.Parse(textBox1.Text);
+                    display.AppendText("\nInteger value is: " + i);
+
+                }
+            }
+
+            else if (radioButtonDBL.Checked)
+            {
+                if (input.Contains(','))
+                {
+                    double i = double.Parse(textBox1.Text);
+                    display.AppendText("\nDouble value is: " + i);
+
+                }
+                else
+                {
+                    display.AppendText("\nEntered number is not a double");
+                }
+
+                /* try
+                 {
+                 for (int i = 0; i < CharArray.Length; i++)
+                   {
+                     double parseNumber = Convert.ToDouble(CharArray[i]);
+                     display.AppendText(Convert.ToString(parseNumber));
+                   }
+                 }
+                   catch (FormatException)
+                   {
+                      display.AppendText("ERROR");
+                   } */
+
+            }
+
+            else if (radioButtonDEC.Checked)
+            {
+                if ((input.Contains('.') || input.Contains(',')) && input.Contains('$'))            // for (int k = 0; k < CharArray.Length; k++)
+                {                                                                                //{
+                    string inText = input.TrimStart('$');
+                    decimal i = decimal.Parse(inText);                                           // if (CharArray[k] == ',' && CharArray[0] == '$')
+                    display.AppendText("\nMoney value is: " + i);
+                    counter += 1;
+
+                }                                                                                //     {
+                else                                                                             //    decimal parseNumber = Convert.ToDecimal(textBox1.Text);
+                {                                                                                    //    display.AppendText(Convert.ToString(parseNumber));
+                    display.AppendText("\nEntered number is not in money format");                     // }
+                }                                                                                 //} 
+            }
+            else
+            {
+                display.AppendText("\nPlease check one radiobutton");
+            }
+        }
+
+        decimal total = 0.00m;
+        private void button2_Click(object sender, EventArgs e)
+        {
+           
+            if (string.IsNullOrEmpty(textBox1.Text))
+            {
+                display.AppendText("Please enter a value.\n");
+                return;
+            }
+            display.Clear();
+            if (radioButtonINT.Checked || radioButtonDBL.Checked || (!radioButtonINT.Checked && !radioButtonDBL.Checked && !radioButtonDEC.Checked))
+            {
+                display.AppendText("Please select decimal.\n");
+            }
+            else if (radioButtonDEC.Checked)
+            {
+                if (!textBox1.Text.StartsWith("$"))
+                {
+                    display.AppendText("To use decimal you need to write money value.\nPut a $ before the number.\n");
+                    return;
+                }
+                foreach (char i in textBox1.Text)
+                {
+                    if ((i == '.' || !char.IsDigit(i)) && i != ',' && i != '$')
+                    {
+                        display.AppendText("Invalid input: '" + i + "'\n");
+                        return;
+                    }
+                }
+                Regex regex = new Regex(@"^\d+\,\d{2}?$");
+                if (regex.IsMatch(textBox1.Text.TrimStart('$')))
+                {
+                    total += decimal.Parse(textBox1.Text.TrimStart('$'));
+                    display.AppendText("Total is: " + total + " $\n");
+                }
+                else
+                {
+                    display.AppendText("Money values need to have exactly two decimal places\nTotal is still " + total);
+                }
+            }
+        }
+    }
+}
